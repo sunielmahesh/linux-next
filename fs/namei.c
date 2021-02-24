@@ -1649,8 +1649,7 @@ static inline int may_lookup(struct user_namespace *mnt_userns,
 			     struct nameidata *nd)
 {
 	if (nd->flags & LOOKUP_RCU) {
-		int err = inode_permission(mnt_userns, nd->inode,
-					   MAY_EXEC | MAY_NOT_BLOCK);
+		int err = inode_permission(mnt_userns, nd->inode, MAY_EXEC|MAY_NOT_BLOCK);
 		if (err != -ECHILD || !try_to_unlazy(nd))
 			return err;
 	}

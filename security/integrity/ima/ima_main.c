@@ -974,7 +974,7 @@ void ima_measure_critical_data(const char *event_label,
 	if (!event_name || !event_label || !buf || !buf_len)
 		return;
 
-	process_buffer_measurement(NULL, NULL, buf, buf_len, event_name,
+	process_buffer_measurement(&init_user_ns, NULL, buf, buf_len, event_name,
 				   CRITICAL_DATA, 0, event_label,
 				   hash);
 }

@@ -856,8 +856,7 @@ static void __setattr_copy(struct user_namespace *mnt_userns,
 		umode_t mode = attr->ia_mode;
 		kgid_t kgid = i_gid_into_mnt(mnt_userns, inode);
 
-		if (!in_group_p(kgid) &&
-			!capable_wrt_inode_uidgid(mnt_userns, inode, CAP_FSETID))
+		if (!in_group_p(kgid) && !capable_wrt_inode_uidgid(mnt_userns, inode, CAP_FSETID))
 			mode &= ~S_ISGID;
 		set_acl_inode(inode, mode);
 	}
@@ -966,8 +965,8 @@ int f2fs_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
 	__setattr_copy(&init_user_ns, inode, attr);
 
 	if (attr->ia_valid & ATTR_MODE) {
-		err = posix_acl_chmod(&init_user_ns, inode,
-				      f2fs_get_inode_mode(inode));
+		err = posix_acl_chmod(&init_user_ns, inode, f2fs_get_inode_mode(inode));
+
 		if (is_inode_flag_set(inode, FI_ACL_MODE)) {
 			if (!err)
 				inode->i_mode = F2FS_I(inode)->i_acl_mode;
