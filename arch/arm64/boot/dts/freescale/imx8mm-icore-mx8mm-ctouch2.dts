@@ -17,6 +17,16 @@
 	chosen {
 		stdout-path = &uart2;
 	};
+
+	reg_usdhc2_vmmc: regulator-usdhc2 {
+		compatible = "regulator-fixed";
+		regulator-name = "WLAN_EN";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		gpio = <&gpio3 22 GPIO_ACTIVE_HIGH>;
+		startup-delay-us = <100>;
+		enable-active-high;
+	};
 };
 
 &iomuxc {
@@ -57,6 +67,17 @@
 			MX8MM_IOMUXC_SD1_DATA3_USDHC1_DATA3     0x1d0
 		>;
 	};
+
+	pinctrl_usdhc2: usdhc2grp {
+		fsl,pins = <
+			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK         0x190
+			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD         0x1d0
+			MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0     0x1d0
+			MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1     0x1d0
+			MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2     0x1d0
+			MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3     0x1d0
+		>;
+	};
 };
 
 &fec1 {
@@ -94,4 +115,23 @@
 	pm-ignore-notify;
 	keep-power-in-suspend;
 	status = "okay";
+};
+
+&usdhc2 {
+	#address-cells = <1>;
+	#size-cells = <0>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_usdhc2>;
+	bus-width = <4>;
+	no-1-8-v;
+	vmmc-supply = <&reg_usdhc2_vmmc>;
+	pm-ignore-notify;
+	keep-power-in-suspend;
+	non-removable;
+	status = "okay";
+
+	brcmf: bcrmf@1 {
+		reg = <1>;
+		compatible = "brcm,bcm4329-fmac";
+	};
 };
